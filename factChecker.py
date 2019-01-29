@@ -28,6 +28,7 @@ def check_facts(data, set_name):
         except IndexError:
             continue
 
+        # Extract all persons, organisations, words of art, buildings and locations
         for word in summary.ents:
             try:
                 if word.label_ == 'PERSON' or word.label_ == 'ORG' or word.label_ == 'WORK_OF_ART' or word.label_ == 'FAC' or word.label_ == 'GPE' or word.label_ == 'LOC':
@@ -42,6 +43,7 @@ def check_facts(data, set_name):
             except Exception as e:
                 print(e)
 
+        # Some entities were falsely recognized with an 's' at the end. (E.g. Zac Efron's instead of Zac Efron)
         all_entities = []
         for word in summary.ents:
             try:
@@ -60,7 +62,7 @@ def check_facts(data, set_name):
         token_to_keep = []
         token_to_keep = token_to_keep + all_entities
 
-
+        # Extract all nouns and proper nouns from fact
         for token in summary:
             if token.pos_ == 'NOUN' or token.pos_ == 'PROPN':
                 if token.lemma_ is not None and token.lemma_ != '':
@@ -70,10 +72,12 @@ def check_facts(data, set_name):
 
         for i in range(len(entities)):
 
+            # Remove entity to check, because entities are never referenced to them self
             token_to_keep.remove(entities[i])
 
             known = None
 
+            # Search for entity in knowledge_matrix to get all references for the entity
             with open('knowledge_matrix.csv', encoding='utf-8') as csv_file:
                 for rows in list(csv.reader(csv_file)):
                     if rows[0] == entities[i]:
@@ -82,11 +86,13 @@ def check_facts(data, set_name):
                 else:
                     pass
 
+            # Continue if entity unknown
             if known is None:
                 continue
 
             local_tokens_known = []
 
+            # Check for all nouns and proper nouns if they are refenreced to the given entity
             for j in range(len(token_to_keep)):
                 local_token_known = False
                 for _id in known:
@@ -97,22 +103,29 @@ def check_facts(data, set_name):
             all_token_known = all_token_known + local_tokens_known
             token_to_keep.append(entities[i])
 
+        # Count references that were found and references that were not found for the final decision
         trues = 0
         for value in all_token_known:
             if value is True:
                 trues += 1
+        # Predict '0.0' if no references were found (also happens im all entities are unknown)
         if trues == 0:
             results.append('0.0')
             print(f"Prediction: {0.0}")
             write(row, '0.0', set_name)
+        # Predict '0.0' if the number of found references is less than 1.8 times the number of references that were not
+        # found. The value 1.8 is the result of a grid search
         elif trues * 1.8 < len(all_token_known):
             results.append('0.0')
             print(f"Prediction: {0.0}")
             write(row, '0.0', set_name)
+        # Predict '1.0' if the first two cases are not applicable
         else:
             results.append('1.0')
             print(f"Prediction: {1.0}")
             write(row, '1.0', set_name)
+
+        # Print the true value
         try:
             print(f"Real: {row[2]}")
         except Exception:
@@ -120,6 +133,7 @@ def check_facts(data, set_name):
         print("")
 
 
+    # Some statistics
     real = []
     for row in data:
         try:
@@ -156,16 +170,20 @@ def check_facts(data, set_name):
     except Exception:
         pass
 
+# Load small english corpus
 nlp = spacy.load('en_core_web_sm')
 
+# Check facts for test.tsv
 with open('test.tsv', encoding='utf-8') as csv_file:
     test = list(csv.reader(csv_file, delimiter='\t'))[1:]
 check_facts(test, 'test')
 
+# Check facts for train.tsv
 with open('train.tsv', encoding='windows-1252') as csv_file:
     train = list(csv.reader(csv_file, delimiter='\t'))[1:]
 check_facts(train, 'train')
 
+# Check facts for impossible.tsv
 with open('impossible.tsv', encoding='utf-8') as csv_file:
     impossible = list(csv.reader(csv_file, delimiter='\t'))[1:]
 check_facts(impossible, 'impossible')

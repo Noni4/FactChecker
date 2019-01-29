@@ -1,4 +1,4 @@
-# wikipediaapi to easily query wikipedia.com
+# wikipediaapi to easily query wikipedia.org
 import wikipediaapi
 
 # csv to read csv/tsv files
@@ -29,7 +29,7 @@ all_know_words = []
 for title in data:
     print(title)
 
-    # Query the text of an entity from wikipedia.com
+    # Query the text of an entity from wikipedia.org
     try:
         important_sentences = []
         print('search for ' + str(title))
