@@ -9,5 +9,10 @@ All packages are found in requirements.txt, you can install them using: pip inst
 To install download en_core_web_sm use: python -m spacy download en_core_web_sm
 ## Description
 - reduceNames.py extracts all entities from test.tsv and train.tsv and saves them in reducedNames.csv
-- buildFactChecker.py requests the wikipedia pages for all entities in reducedNames.csv and extracts all nouns and proper nouns from the wikipedia page of an entity and saves these in 
+- buildFactChecker.py requests the wikipedia pages for all entities in reducedNames.csv and extracts all nouns and proper nouns from the wikipedia page of an entity and saves these in knowledge_matrix.csv
+- factChecker.py checks the facts in test.tsv, train.tsv and impossible.tsv and writes the prediction in results_test.ttl, results_train.ttl and results_impossible.ttl
+## Usage
+- python reduceNames.py
+- python buildFactChecker.py
+- python factChecker.py
 
