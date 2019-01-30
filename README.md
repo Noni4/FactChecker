@@ -2,7 +2,7 @@
 ## Language
 - Python 3.6.6 :: Anaconda, Inc.
 ## Packages
-All packages are found in requirements.txt, you can install them using: pip install -r requirements.txt \n
+All packages are found in requirements.txt, you can install them using: pip install -r requirements.txt __
 Depending on your your Anaconda settings you might need to install pip: conda install -c anaconda pip
 - spacy==2.0.16
 - wikipedia-api==0.4.3
