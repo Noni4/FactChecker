@@ -6,7 +6,7 @@ All packages are found in requirements.txt, you can install them using: pip inst
 Depending on your your Anaconda settings you might need to install pip: conda install -c anaconda pip
 - spacy==2.0.16
 - wikipedia-api==0.4.3
-### Spacy corpus: download en_core_web_sm
+### Spacy model: download en_core_web_sm
 To install download en_core_web_sm use: python -m spacy download en_core_web_sm
 ## Description
 A more detailed description can be found in SNLP.pdf
